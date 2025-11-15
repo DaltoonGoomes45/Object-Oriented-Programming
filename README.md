@@ -61,14 +61,14 @@ O projeto é desenvolvido em **Java com Spring Boot** no backend, **MySQL** como
 
 1. Criar o banco de dados:
 ```bash
-mysql -u root -p
+** mysql -u root -p
 
-Digite a senha: 290820
+# Digite a senha: 290820
 
-Dentro do MySQL:
+# Dentro do MySQL:
 
-CREATE DATABASE sistema_automotivo;
-EXIT;
+## CREATE DATABASE sistema_automotivo;
+# EXIT;
 
 2. Importar o backup:
 mysql -u root -p sistema_automotivo < backup.sql
