@@ -1,112 +1,120 @@
-# 🚗 Sistema Automotivo – Gestão de Estoque de Veículos
+# Sistema Automotivo – Gestão de Estoque de Veículos
 
-## 📜 Descrição
-Sistema completo para a **gestão de estoque de veículos**, permitindo o **cadastro**, **edição**, **exclusão** e **consulta** de veículos com filtros avançados por **marca**, **modelo**, **ano**, **preço** e **status** (Disponível, Vendido, Reservado).
+## Descrição
+Sistema para gestão de estoque de veículos, permitindo cadastro, edição, exclusão e consulta de veículos com filtros por marca, modelo, ano, preço e status.
 
-O projeto adota uma arquitetura full-stack moderna, com foco em desempenho e facilidade de manutenção.
-
----
-
-## 💻 Tecnologias Utilizadas
-
-| Camada | Tecnologia | Versão/Detalhe |
-| :--- | :--- | :--- |
-| **Backend** | **Java** | 25 (OpenJDK) |
-| | **Spring Boot** | Framework principal |
-| **Banco de Dados** | **MySQL** | 8 |
-| **Frontend** | **HTML, CSS, JavaScript** | Padrão Web |
-| **Comunicação** | **API REST** | Formato JSON |
-| **Gerenciador de Dependências** | **Apache Maven** | 3.9.11 |
+O projeto é desenvolvido em **Java com Spring Boot** no backend, **MySQL** como banco de dados, e frontend em **HTML, CSS e JavaScript**.
 
 ---
 
-## 🗃️ Estrutura do Banco de Dados
+## Tecnologias Utilizadas
+- **Backend:** Java 25 + Spring Boot
+- **Banco de Dados:** MySQL 8
+- **Frontend:** HTML, CSS, JavaScript
+- **Gerenciador de Dependências:** Apache Maven 3.9.11
+- **Comunicação:** API REST (JSON)
 
-O projeto utiliza o banco de dados **MySQL** e gerencia o estoque através da tabela `veiculo`.
+---
+
+## Estrutura do Banco de Dados
 
 ### Tabela `veiculo`
 
-| Coluna | Tipo | Observações |
-| :--- | :--- | :--- |
-| `id` | `int` | **PK**, auto-increment |
-| `marca` | `varchar(50)` | Nome da marca |
-| `modelo` | `varchar(80)` | Modelo do veículo |
-| `ano` | `int` | Ano de fabricação |
-| `cor` | `varchar(50)` | Cor do veículo |
-| `preco` | `decimal(10,2)` | Preço de venda |
-| `quilometragem` | `int` | Quilometragem atual |
-| `status` | `varchar(30)` | Disponível, Vendido, Reservado |
+| Coluna        | Tipo          | Observações                  |
+|---------------|---------------|------------------------------|
+| id            | int           | PK, auto-increment           |
+| marca         | varchar(50)   | Nome da marca                |
+| modelo        | varchar(80)   | Modelo do veículo            |
+| ano           | int           | Ano de fabricação            |
+| cor           | varchar(50)   | Cor do veículo               |
+| preco         | decimal(10,2) | Preço do veículo             |
+| quilometragem | int           | Quilometragem atual          |
+| status        | varchar(30)   | Disponível, Vendido, Reservado |
 
-> ℹ️ O arquivo **`backup.sql`** contém esta tabela e dados de exemplo prontos para teste imediato.
-
----
-
-## ✨ Funcionalidades
-
-O sistema oferece as seguintes funcionalidades:
-
-* **Cadastro Completo:** Registro de veículos com todos os campos (marca, modelo, ano, cor, preço, quilometragem, status).
-* **Busca Avançada:** **Consulta** e **filtros** por marca, modelo, ano, preço e status.
-* **Busca Rápida:** Implementada diretamente no frontend para agilidade.
-* **Atualização de Dados:** Edição de informações como preço, quilometragem e status.
-* **Gerenciamento de Status:** **Remoção** de veículos ou simples **marcação como vendido**.
-* **Interface Amigável:** Uso de **Modais** para cadastro e edição de veículos.
+> O arquivo `backup.sql` contém esta tabela com dados de exemplo prontos para testes.  
 
 ---
 
-## 🛠️ Como Rodar o Projeto
+## Funcionalidades
+1. Cadastro de veículos (marca, modelo, ano, cor, preço, quilometragem, status)  
+2. Consulta e filtros por marca, modelo, ano, preço e status  
+3. Atualização de informações (preço, quilometragem e status)  
+4. Remoção de veículos ou marcação como vendido  
+5. Busca rápida diretamente no frontend  
+6. Modais de cadastro e edição de veículos  
 
-Siga os passos abaixo para configurar e executar o projeto em sua máquina local.
+---
+
+## Como Rodar o Projeto
 
 ### **1️⃣ Pré-requisitos**
+- **Java 25 (OpenJDK)**  
+- **Apache Maven 3.9.11**  
+- **MySQL 8**  
+- Navegador moderno (Chrome, Edge, Firefox)
 
-Certifique-se de ter os seguintes softwares instalados e configurados no **PATH do sistema**:
-
-* **Java 25 (OpenJDK)**
-* **Apache Maven 3.9.11**
-* **MySQL 8**
-* **Navegador moderno** (Chrome, Edge, Firefox, etc.)
+> Certifique-se de que Java, Maven e MySQL estejam no **PATH do sistema**.
 
 ---
 
 ### **2️⃣ Configurar o Banco de Dados**
 
-#### **2.1. Criar o Banco de Dados**
-
-Abra o terminal e acesse o cliente MySQL:
-
+1. Criar o banco de dados:
+```bash
 mysql -u root -p
-SQL
 
-# Digite sua senha:290820
-Crie o bando de dados
+Digite a senha: 290820
+
+Dentro do MySQL:
+
 CREATE DATABASE sistema_automotivo;
 EXIT;
-2.2. Importar o Backup
-Importe o arquivo backup.sql para popular o banco com dados de exemplo:
 
+
+Importar o backup:
 
 mysql -u root -p sistema_automotivo < backup.sql
-⚠️ Observação de Backup: O backup foi criado com as credenciais padrão root e senha 290820 para testes rápidos. Para gerar novos backups futuros, utilize o comando:
 
 
-mysqldump -u root -p sistema_automotivo > backup.sql
+Isso cria a tabela veiculo com os dados de exemplo prontos para teste.
+
 3️⃣ Configurar o Backend (Spring Boot)
-Edite o arquivo application.properties (ou o equivalente de configuração do Spring Boot) e ajuste as credenciais do banco de dados, se necessário.
+
+No arquivo application.properties configure:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/sistema_automotivo
 spring.datasource.username=root
 spring.datasource.password=290820
 spring.jpa.hibernate.ddl-auto=update
-4️⃣ Rodar o Backend
-No terminal, navegue até a pasta raiz do projeto e execute o comando Maven para iniciar a aplicação Spring Boot:
+
+4️⃣ Rodar o Projeto
+
+No terminal, na pasta do projeto, execute:
 
 mvn spring-boot:run
-O serviço da API REST estará disponível em: http://localhost:8080/veiculos.
 
-🔔 Atenção: Certifique-se de que a porta 8080 esteja livre em seu sistema.
+
+A API estará disponível em: http://localhost:8080/veiculos
+
+Certifique-se de que a porta 8080 esteja livre.
 
 5️⃣ Testar o Frontend
-Após o backend estar rodando, abra o arquivo index.html diretamente em seu navegador para acessar a interface do sistema.
 
-O frontend se comunica com a API REST utilizando a função fetch (JSON).
+Abra index.html no navegador
+
+Certifique-se que o backend está rodando
+
+Teste cadastro, edição, filtros e exclusão
+
+6️⃣ Observações
+
+Qualquer usuário pode importar o backup usando o usuário root e a senha 290820.
+
+O arquivo backup.sql contém apenas a tabela veiculo com dados de exemplo.
+
+Para gerar novos backups futuros:
+
+mysqldump -u root -p sistema_automotivo > backup.sql
+
+
+O frontend se comunica com a API via fetch (JSON).
