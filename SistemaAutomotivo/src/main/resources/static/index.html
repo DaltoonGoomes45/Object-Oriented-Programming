@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Estoque de Veículos</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===================== BANNER DO TOPO ===================== */
+
+        .header-banner {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .header-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(60%);
+        }
+
+        /* Sombras degradê para suavizar o corte inferior */
+        .banner-fade {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #f4f4f4 100%);
+        }
+
+        .banner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            width: 90%;
+        }
+
+        .banner-overlay h1 {
+            font-size: 34px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .banner-overlay input {
+            width: 320px;
+            max-width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            margin-bottom: 12px;
+        }
+
+        .novo-btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .novo-btn:hover {
+            background: #1f7e34;
+        }
+
+        /* ===================== TABELA ===================== */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background: #222;
+            color: #fff;
+        }
+
+        tr:hover {
+            background: #f0f0f0;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .editar { background: #ffc107; }
+        .excluir { background: #dc3545; color: #fff; }
+
+        /* ===================== MODAIS ===================== */
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modalContent {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            width: 400px;
+            box-sizing: border-box;
+        }
+
+        .modalContent input,
+        .modalContent select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .modalContent button {
+            margin-top: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===================== CABEÇALHO COM IMAGEM ===================== -->
+
+    <div class="header-banner">
+        <img src="carz.png">
+
+        <div class="banner-overlay">
+            <h1>Estoque de Veículos</h1>
+
+            <input type="text" id="searchInput" placeholder="Buscar (marca, modelo, ano, status, preço...)">
+
+            <br>
+
+            <button class="novo-btn" onclick="abrirModalCadastro()">+ Cadastrar Novo Veículo</button>
+        </div>
+
+        <div class="banner-fade"></div>
+    </div>
+
+
+    <!-- ===================== TABELA ===================== -->
+
+    <table id="tabelaVeiculos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Ano</th>
+                <th>Cor</th>
+                <th>Preço</th>
+                <th>KM</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+    <!-- ===================== MODAL EDITAR ===================== -->
+
+    <div id="modalEditar" class="modal">
+        <div class="modalContent">
+            <h3>Editar Veículo</h3>
+
+            <input id="editMarca" placeholder="Marca">
+            <input id="editModelo" placeholder="Modelo">
+            <input id="editAno" placeholder="Ano">
+            <input id="editCor" placeholder="Cor">
+            <input id="editPreco" placeholder="Preço">
+            <input id="editKm" placeholder="Quilometragem">
+            <input id="editStatus" placeholder="Status">
+
+            <button id="salvarEdicao" class="editar">Salvar</button>
+            <button onclick="fecharModalEditar()">Cancelar</button>
+        </div>
+    </div>
+
+
+    <!-- ===================== MODAL CADASTRO ===================== -->
+
+    <div id="modalCadastro" class="modal">
+        <div class="modalContent">
+            <h3>Cadastrar Novo Veículo</h3>
+
+            <input id="cadMarca" placeholder="Marca">
+            <input id="cadModelo" placeholder="Modelo">
+            <input id="cadAno" placeholder="Ano">
+            <input id="cadCor" placeholder="Cor">
+            <input id="cadPreco" placeholder="Preço">
+            <input id="cadKm" placeholder="Quilometragem">
+
+            <select id="cadStatus">
+                <option value="">Status...</option>
+                <option value="Disponível">Disponível</option>
+                <option value="Vendido">Vendido</option>
+                <option value="Reservado">Reservado</option>
+            </select>
+
+            <button onclick="salvarCadastro()" class="editar">Salvar</button>
+            <button onclick="fecharModalCadastro()">Cancelar</button>
+        </div>
+    </div>
+
+
+    <!-- ===================== JAVASCRIPT ===================== -->
+
+    <script>
+
+        const tabela = document.querySelector("#tabelaVeiculos tbody");
+        let idEditando = null;
+
+        async function carregarVeiculos() {
+            const response = await fetch("http://localhost:8080/veiculos");
+            const veiculos = await response.json();
+
+            tabela.innerHTML = "";
+
+            veiculos.forEach(v => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${v.id}</td>
+                    <td>${v.marca}</td>
+                    <td>${v.modelo}</td>
+                    <td>${v.ano}</td>
+                    <td>${v.cor}</td>
+                    <td>R$ ${v.preco.toLocaleString("pt-BR")}</td>
+                    <td>${v.quilometragem.toLocaleString("pt-BR")} km</td>
+                    <td>${v.status}</td>
+                    <td>
+                        <button class="editar" onclick='abrirModalEditar(${JSON.stringify(v)})'>Editar</button>
+                        <button class="excluir" onclick='excluirVeiculo(${v.id})'>Excluir</button>
+                    </td>
+                `;
+                tabela.appendChild(tr);
+            });
+        }
+
+        carregarVeiculos();
+
+        // ========== BUSCA RÁPIDA ==========
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            const filtro = this.value.toLowerCase();
+            const linhas = tabela.querySelectorAll("tr");
+
+            linhas.forEach(linha => {
+                const colunas = Array.from(linha.children).map(td => td.textContent.toLowerCase());
+                const corresponde = colunas.some(texto => texto.includes(filtro));
+                linha.style.display = corresponde ? "" : "none";
+            });
+        });
+
+
+        // ========== MODAL EDITAR ==========
+        function abrirModalEditar(v) {
+            idEditando = v.id;
+
+            document.getElementById("editMarca").value = v.marca;
+            document.getElementById("editModelo").value = v.modelo;
+            document.getElementById("editAno").value = v.ano;
+            document.getElementById("editCor").value = v.cor;
+            document.getElementById("editPreco").value = v.preco;
+            document.getElementById("editKm").value = v.quilometragem;
+            document.getElementById("editStatus").value = v.status;
+
+            document.getElementById("modalEditar").style.display = "flex";
+        }
+
+        function fecharModalEditar() {
+            document.getElementById("modalEditar").style.display = "none";
+        }
+
+        document.getElementById("salvarEdicao").addEventListener("click", async () => {
+            const dados = {
+                marca: document.getElementById("editMarca").value,
+                modelo: document.getElementById("editModelo").value,
+                ano: document.getElementById("editAno").value,
+                cor: document.getElementById("editCor").value,
+                preco: document.getElementById("editPreco").value,
+                quilometragem: document.getElementById("editKm").value,
+                status: document.getElementById("editStatus").value
+            };
+
+            await fetch(`http://localhost:8080/veiculos/${idEditando}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
+
+            fecharModalEditar();
+            carregarVeiculos();
+        });
+
+
+        // ========== MODAL CADASTRO ==========
+        function abrirModalCadastro() {
+            document.getElementById("modalCadastro").style.display = "flex";
+        }
+
+        function fecharModalCadastro() {
+            document.getElementById("modalCadastro").style.display = "none";
+        }
+
+        async function salvarCadastro() {
+            const dados = {
+                marca: document.getElementById("cadMarca").value,
+                modelo: document.getElementById("cadModelo").value,
+                ano: document.getElementById("cadAno").value,
+                cor: document.getElementById("cadCor").value,
+                preco: document.getElementById("cadPreco").value,
+                quilometragem: document.getElementById("cadKm").value,
+                status: document.getElementById("cadStatus").value
+            };
+
+            await fetch(`http://localhost:8080/veiculos`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
+
+            fecharModalCadastro();
+            carregarVeiculos();
+        }
+
+
+        // ========== EXCLUIR ==========
+        async function excluirVeiculo(id) {
+            if (!confirm("Deseja realmente excluir este veículo?")) return;
+
+            await fetch(`http://localhost:8080/veiculos/${id}`, {
+                method: "DELETE"
+            });
+
+            carregarVeiculos();
+        }
+
+    </script>
+
+</body>
+</html>
