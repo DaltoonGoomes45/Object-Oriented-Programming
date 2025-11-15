@@ -14,7 +14,6 @@
         }
 
         /* ===================== BANNER DO TOPO ===================== */
-
         .header-banner {
             position: relative;
             width: 100%;
@@ -37,6 +36,8 @@
             width: 100%;
             height: 80px;
             background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #f4f4f4 100%);
+            pointer-events: none; /* Permite clicar através do gradiente */
+            z-index: 1;
         }
 
         .banner-overlay {
@@ -47,6 +48,7 @@
             text-align: center;
             color: white;
             width: 90%;
+            z-index: 10; /* Sobre a imagem e gradiente */
         }
 
         .banner-overlay h1 {
@@ -73,6 +75,8 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            position: relative;
+            z-index: 11; /* Garante que fique acima de todos os elementos */
         }
 
         .novo-btn:hover {
@@ -80,7 +84,6 @@
         }
 
         /* ===================== TABELA ===================== */
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -116,7 +119,6 @@
         .excluir { background: #dc3545; color: #fff; }
 
         /* ===================== MODAIS ===================== */
-
         .modal {
             display: none;
             position: fixed;
@@ -125,6 +127,7 @@
             background: rgba(0,0,0,0.6);
             justify-content: center;
             align-items: center;
+            z-index: 20; /* Sobre todos os elementos */
         }
 
         .modalContent {
@@ -153,26 +156,21 @@
 <body>
 
     <!-- ===================== CABEÇALHO COM IMAGEM ===================== -->
-
     <div class="header-banner">
-        <img src="carz.png">
+        <img src="carz.png" alt="Banner">
 
         <div class="banner-overlay">
             <h1>Estoque de Veículos</h1>
 
             <input type="text" id="searchInput" placeholder="Buscar (marca, modelo, ano, status, preço...)">
-
             <br>
-
             <button class="novo-btn" onclick="abrirModalCadastro()">+ Cadastrar Novo Veículo</button>
         </div>
 
         <div class="banner-fade"></div>
     </div>
 
-
     <!-- ===================== TABELA ===================== -->
-
     <table id="tabelaVeiculos">
         <thead>
             <tr>
@@ -190,9 +188,7 @@
         <tbody></tbody>
     </table>
 
-
     <!-- ===================== MODAL EDITAR ===================== -->
-
     <div id="modalEditar" class="modal">
         <div class="modalContent">
             <h3>Editar Veículo</h3>
@@ -210,9 +206,7 @@
         </div>
     </div>
 
-
     <!-- ===================== MODAL CADASTRO ===================== -->
-
     <div id="modalCadastro" class="modal">
         <div class="modalContent">
             <h3>Cadastrar Novo Veículo</h3>
@@ -236,20 +230,15 @@
         </div>
     </div>
 
-
     <!-- ===================== JAVASCRIPT ===================== -->
-
     <script>
-
         const tabela = document.querySelector("#tabelaVeiculos tbody");
         let idEditando = null;
 
         async function carregarVeiculos() {
             const response = await fetch("http://localhost:8080/veiculos");
             const veiculos = await response.json();
-
             tabela.innerHTML = "";
-
             veiculos.forEach(v => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -276,19 +265,15 @@
         document.getElementById("searchInput").addEventListener("keyup", function () {
             const filtro = this.value.toLowerCase();
             const linhas = tabela.querySelectorAll("tr");
-
             linhas.forEach(linha => {
                 const colunas = Array.from(linha.children).map(td => td.textContent.toLowerCase());
-                const corresponde = colunas.some(texto => texto.includes(filtro));
-                linha.style.display = corresponde ? "" : "none";
+                linha.style.display = colunas.some(texto => texto.includes(filtro)) ? "" : "none";
             });
         });
-
 
         // ========== MODAL EDITAR ==========
         function abrirModalEditar(v) {
             idEditando = v.id;
-
             document.getElementById("editMarca").value = v.marca;
             document.getElementById("editModelo").value = v.modelo;
             document.getElementById("editAno").value = v.ano;
@@ -296,7 +281,6 @@
             document.getElementById("editPreco").value = v.preco;
             document.getElementById("editKm").value = v.quilometragem;
             document.getElementById("editStatus").value = v.status;
-
             document.getElementById("modalEditar").style.display = "flex";
         }
 
@@ -314,17 +298,14 @@
                 quilometragem: document.getElementById("editKm").value,
                 status: document.getElementById("editStatus").value
             };
-
             await fetch(`http://localhost:8080/veiculos/${idEditando}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dados)
             });
-
             fecharModalEditar();
             carregarVeiculos();
         });
-
 
         // ========== MODAL CADASTRO ==========
         function abrirModalCadastro() {
@@ -345,30 +326,21 @@
                 quilometragem: document.getElementById("cadKm").value,
                 status: document.getElementById("cadStatus").value
             };
-
             await fetch(`http://localhost:8080/veiculos`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dados)
             });
-
             fecharModalCadastro();
             carregarVeiculos();
         }
 
-
         // ========== EXCLUIR ==========
         async function excluirVeiculo(id) {
             if (!confirm("Deseja realmente excluir este veículo?")) return;
-
-            await fetch(`http://localhost:8080/veiculos/${id}`, {
-                method: "DELETE"
-            });
-
+            await fetch(`http://localhost:8080/veiculos/${id}`, { method: "DELETE" });
             carregarVeiculos();
         }
-
     </script>
-
 </body>
 </html>
