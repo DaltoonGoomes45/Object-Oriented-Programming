@@ -73,30 +73,26 @@ Certifique-se de ter os seguintes softwares instalados e configurados no **PATH 
 
 #### **2.1. Criar o Banco de Dados**
 
-Abra o terminal e acesse o cliente MySQL (substitua a senha conforme necessário):
+Abra o terminal e acesse o cliente MySQL:
 
-```bash
 mysql -u root -p
 SQL
 
-# Digite sua senha:
+# Digite sua senha:290820
+Crie o bando de dados
 CREATE DATABASE sistema_automotivo;
 EXIT;
 2.2. Importar o Backup
 Importe o arquivo backup.sql para popular o banco com dados de exemplo:
 
-Bash
 
 mysql -u root -p sistema_automotivo < backup.sql
 ⚠️ Observação de Backup: O backup foi criado com as credenciais padrão root e senha 290820 para testes rápidos. Para gerar novos backups futuros, utilize o comando:
 
-Bash
 
 mysqldump -u root -p sistema_automotivo > backup.sql
 3️⃣ Configurar o Backend (Spring Boot)
 Edite o arquivo application.properties (ou o equivalente de configuração do Spring Boot) e ajuste as credenciais do banco de dados, se necessário.
-
-Properties
 
 spring.datasource.url=jdbc:mysql://localhost:3306/sistema_automotivo
 spring.datasource.username=root
@@ -104,8 +100,6 @@ spring.datasource.password=290820
 spring.jpa.hibernate.ddl-auto=update
 4️⃣ Rodar o Backend
 No terminal, navegue até a pasta raiz do projeto e execute o comando Maven para iniciar a aplicação Spring Boot:
-
-Bash
 
 mvn spring-boot:run
 O serviço da API REST estará disponível em: http://localhost:8080/veiculos.
